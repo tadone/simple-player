@@ -56,10 +56,23 @@ def music():
     print "Music...\n"
     songs = os.listdir('music')  # List of songs in music folder
     for song in songs:
-        player = vlc.MediaPlayer('music/' + song)
-        player.play()
         # vlc_play('music/' + song)
-        # print(song)
+        print(song)
+    player = vlc.MediaPlayer('music/' + songs[0])
+    print('playing ' + songs[0])
+    player.play()
+    time.sleep(1)
+    while player.is_playing():
+        print(player.get_state())
+        time.sleep(2)
+        continue
+    # try:
+    #     while player.is_playing():
+    #         time.sleep(5)
+    #         continue
+    # except Exception:
+    #     print('There was an issue')
+
     # choice = raw_input('\nP - Play\tN - Next\tP - Previous\tS - Stop: ')
     # ch = choice.lower()
     # if ch == '':
