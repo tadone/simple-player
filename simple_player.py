@@ -8,12 +8,13 @@ import os
 import sys
 import random
 import time
+from itertools import count
 # def rnd_mp3(dir):
 #     randomfile = random.choice(os.listdir("/home/pi/music/"))
 # 	file = ' /home/pi/music/'+ randomfile
 # 	os.system ('mplayer' + file)
 song_list=['SampleAudio.mp3','SampleAudio.mp3']
-
+counter = 0
 
 def MainPlayer():
     pass
@@ -22,15 +23,15 @@ def MainPlayer():
 def main_menu():
     # os.system('clear')
     # Show menu #
-    print (30 * '-')
-    print ("   M A I N - M E N U")
-    print (30 * '-')
-    print ("1. Music")
-    print ("2. Podcasts")
-    print ("3. Streams")
-    print ("\n0. Exit")
-    print (30 * '-')
-    choice = raw_input('Enter your choice [1-3] : ')
+    print(30 * '-')
+    print("   M A I N - M E N U")
+    print(30 * '-')
+    print("1. Music")
+    print("2. Podcasts")
+    print("3. Streams")
+    print("\n0. Exit")
+    print(30 * '-')
+    choice = input('Enter your choice [1-3] : ')
     exec_menu(choice)
 
     return
@@ -46,18 +47,23 @@ def exec_menu(choice):
         try:
             menu_actions[ch]()
         except KeyError:
-            print "Invalid selection, please try again.\n"
+            print("Invalid selection, please try again.\n")
             menu_actions['main_menu']()
     return
 
 
 # Menu 1
 def music():
-    print "Music...\n"
+    print("Music...\n")
     songs = os.listdir('music')  # List of songs in music folder
+    global counter
     for song in songs:
-        # vlc_play('music/' + song)
-        print(song)
+        if len(songs) < 0:
+            print('No songs in music folder')
+        else:
+            counter += 1
+            print(str(counter) + '. ' + song)
+    choice = input('\nP - Play\tN - Next\tP - Previous\tS - Stop: ')
     player = vlc.MediaPlayer('music/' + songs[0])
     print('playing ' + songs[0])
     player.play()
@@ -89,9 +95,9 @@ def music():
 
 # Menu 1
 def podcasts():
-    print "Podcasts...\n"
-    print "9. Back"
-    print "0. Quit"
+    print("Podcasts...\n")
+    print("9. Back")
+    print("0. Quit")
     choice = raw_input(" >>  ")
     exec_menu(choice)
     return
@@ -99,9 +105,9 @@ def podcasts():
 
 # Menu 1
 def streams():
-    print "Streams...\n"
-    print "9. Back"
-    print "0. Quit"
+    print("Streams...\n")
+    print("9. Back")
+    print("0. Quit")
     choice = raw_input(" >>  ")
     exec_menu(choice)
     return
@@ -129,8 +135,8 @@ def vlc_play(song):
 
 
 def sub_menu():
-    print "9. Back"
-    print "0. Quit"
+    print("9. Back")
+    print("0. Quit")
     choice = raw_input(" >>  ")
     exec_menu(choice)
     return
