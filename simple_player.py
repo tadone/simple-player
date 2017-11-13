@@ -16,10 +16,6 @@ from itertools import count
 song_list=['SampleAudio.mp3','SampleAudio.mp3']
 counter = 0
 
-def MainPlayer():
-    pass
-
-
 def main_menu():
     # os.system('clear')
     # Show menu #
@@ -63,15 +59,25 @@ def music():
         else:
             counter += 1
             print(str(counter) + '. ' + song)
-    choice = input('\nP - Play\tN - Next\tP - Previous\tS - Stop: ')
-    player = vlc.MediaPlayer('music/' + songs[0])
-    print('playing ' + songs[0])
-    player.play()
-    time.sleep(1)
-    while player.is_playing():
-        print(player.get_state())
-        time.sleep(2)
-        continue
+
+
+
+    elif ch == 's':
+
+
+def play_opts():
+    choice = input('\ns - Play/Pause\td - Next\ta - Previous\tw - Stop: ')
+    ch = choice.lower()
+    if ch == '':
+        menu_actions['main_menu']()
+    else:
+        try:
+            menu_play[ch]()
+        except KeyError:
+            print("Invalid selection, please try again.\n")
+            menu_actions['main_menu']()
+    return
+
     # try:
     #     while player.is_playing():
     #         time.sleep(5)
@@ -128,10 +134,18 @@ def streams():
 #         continue
 
 
-def vlc_play(song):
+def vlc_play_pause(song):
     player = vlc.MediaPlayer(song)
     player.play()
-    player.get_instance()
+    # player.get_instance()
+    player = vlc.MediaPlayer('music/' + songs[0])
+    print('playing ' + songs[0])
+    player.play()
+    time.sleep(1)
+    while player.is_playing():
+        print(player.get_state())
+        time.sleep(2)
+        continue
 
 
 def sub_menu():
@@ -161,6 +175,12 @@ menu_actions = {
     '0': exit,
 }
 
+menu_play = {
+    's': vlc_play_pause,
+    'd': vlc_play_next,
+    'a': vlc_play_prev,
+    'w': vlc_stop,
+}
 
 # instance=vlc.Instance()
 # for song in song_list:
