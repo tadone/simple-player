@@ -13,8 +13,8 @@ from itertools import count
 #     randomfile = random.choice(os.listdir("/home/pi/music/"))
 # 	file = ' /home/pi/music/'+ randomfile
 # 	os.system ('mplayer' + file)
-song_list=['SampleAudio.mp3','SampleAudio.mp3']
 counter = 0
+
 
 def main_menu():
     # os.system('clear')
@@ -51,7 +51,8 @@ def exec_menu(choice):
 # Menu 1
 def music():
     print("Music...\n")
-    songs = os.listdir('music')  # List of songs in music folder
+    songs = [os.path.join('music', f) for f in os.listdir('music')]  # List of songs in music folder
+    songz = os.listdir('music')
     global counter
     for song in songs:
         if len(songs) < 0:
@@ -59,24 +60,96 @@ def music():
         else:
             counter += 1
             print(str(counter) + '. ' + song)
+    # VLC Handler
+    # player = vlc.MediaPlayer()
+    # medialist = vlc.MediaList(songs)
+    # mlplayer = vlc.MediaListPlayer()
+    # mlplayer.set_media_list(medialist)
+    Instance = vlc.Instance()
+    # medialist = Instance.media_list_new(songs)
+    vlc_player = Instance.media_player_new()
+    # mlplayer = Instance.media_list_player_new()
+    # mlplayer.set_media_list(medialist)
+    # Music Menu
+    print('\n' + 30 * '-')
+    while True:
+        choice = input('(P)lay/Pause\t(N)ext Song\tP(r)evious Song\tX. Stop\t0. Exit: ')
+        ch = choice.lower()
+        if ch == 'p' and not vlc_player.is_playing():
+            num = random.randint(0, len(songs) - 1)
+            vlc_player.set_mrl(songs[int(num)])
+            print('Playing {}'.format(songs[int(num)]))
+            vlc_player.play()
 
-
-
-    elif ch == 's':
-
-
-def play_opts():
-    choice = input('\ns - Play/Pause\td - Next\ta - Previous\tw - Stop: ')
-    ch = choice.lower()
-    if ch == '':
-        menu_actions['main_menu']()
-    else:
-        try:
-            menu_play[ch]()
-        except KeyError:
-            print("Invalid selection, please try again.\n")
+        elif ch == 'p' and vlc_player.is_playing():
+            vlc_player.pause()
+            print('Pausing...')
+        elif ch == 'n':
+            pass
+            # mlplayer.next()
+        elif ch == 'n':
+            pass
+            # mlplayer.previous()
+        elif ch == 'x':
+            vlc_player.stop()
+        elif ch == '0':
+            vlc_player.stop()
             menu_actions['main_menu']()
-    return
+        else:
+            print('Wrong choice...')
+        continue
+
+        # print('Playing Random Song...')
+        #
+        # time.sleep(1)
+        # while True:
+        #     choice = input('\ns - Play/Pause\td - Next\ta - Previous\tw - Stop: ')
+        #     ch = choice.lower()
+        #     if ch == 's':
+        #         if mlplayer.is_playing():
+        #             mlplayer.pause()
+        #         else:
+        #             mlplayer.play()
+        #     elif ch == 'd':
+        #         mlplayer.next()
+        #     elif ch == 'a':
+        #         mlplayer.previous()
+        #     else:
+        #         break
+        #     continue
+    # else:
+    #     menu_actions[ch]()
+    # while mlplayer.is_playing():
+        # print(mlplayer.get_state())
+        # time.sleep(5)
+    # choice = input('\ns - Play/Pause\td - Next\ta - Previous\tw - Stop: ')
+    # ch = choice.lower()
+    # while True:
+    #     if ch == 's':
+    #         # print('Play')
+    #         if mlplayer.is_playing():
+    #             mlplayer.pause()
+    #             continue
+    #         else:
+    #             mlplayer.play()
+    #             continue
+    #     elif ch == 'w':
+    #         # print('Stop')
+    #         mlplayer.stop()
+    #         continue
+
+# def play_opts():
+#     choice = input('\ns - Play/Pause\td - Next\ta - Previous\tw - Stop: ')
+#     ch = choice.lower()
+#     if ch == '':
+#         menu_actions['main_menu']()
+#     else:
+#         try:
+#             menu_play[ch]()
+#         except KeyError:
+#             print("Invalid selection, please try again.\n")
+#             menu_actions['main_menu']()
+#     return
 
     # try:
     #     while player.is_playing():
@@ -85,7 +158,7 @@ def play_opts():
     # except Exception:
     #     print('There was an issue')
 
-    # choice = raw_input('\nP - Play\tN - Next\tP - Previous\tS - Stop: ')
+    # choice = input('\nP - Play\tN - Next\tP - Previous\tS - Stop: ')
     # ch = choice.lower()
     # if ch == '':
     #     menu_actions['main_menu']()
@@ -104,7 +177,7 @@ def podcasts():
     print("Podcasts...\n")
     print("9. Back")
     print("0. Quit")
-    choice = raw_input(" >>  ")
+    choice = input(" >>  ")
     exec_menu(choice)
     return
 
@@ -114,7 +187,7 @@ def streams():
     print("Streams...\n")
     print("9. Back")
     print("0. Quit")
-    choice = raw_input(" >>  ")
+    choice = input(" >>  ")
     exec_menu(choice)
     return
 
@@ -151,7 +224,7 @@ def vlc_play_pause(song):
 def sub_menu():
     print("9. Back")
     print("0. Quit")
-    choice = raw_input(" >>  ")
+    choice = input(" >>  ")
     exec_menu(choice)
     return
 
@@ -175,12 +248,12 @@ menu_actions = {
     '0': exit,
 }
 
-menu_play = {
-    's': vlc_play_pause,
-    'd': vlc_play_next,
-    'a': vlc_play_prev,
-    'w': vlc_stop,
-}
+# menu_play = {
+#     's': vlc_play_pause,
+#     'd': vlc_play_next,
+#     'a': vlc_play_prev,
+#     'w': vlc_stop,
+# }
 
 # instance=vlc.Instance()
 # for song in song_list:
