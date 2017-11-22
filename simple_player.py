@@ -14,6 +14,7 @@ from itertools import count
 # 	file = ' /home/pi/music/'+ randomfile
 # 	os.system ('mplayer' + file)
 counter = 0
+streams_file = 'streams/streams.txt'
 
 
 def main_menu():
@@ -74,7 +75,7 @@ def music():
     else:
         print('Random OFF')
         rand = False
-    choice = input('(P)lay/Pause\t9. Back\t0. Exit: ')
+    choice = input('(P)lay/Pause\t9. Back\t0. Exit\n->> ')
     ch = choice.lower()
     x = 0
     if ch == 'p' and not vlc_player.is_playing():
@@ -123,77 +124,6 @@ def music():
             continue
     else:
         exec_menu(ch)
-        # print('Playing Random Song...')
-        #
-        # time.sleep(1)
-        # while True:
-        #     choice = input('\ns - Play/Pause\td - Next\ta - Previous\tw - Stop: ')
-        #     ch = choice.lower()
-        #     if ch == 's':
-        #         if mlplayer.is_playing():
-        #             mlplayer.pause()
-        #         else:
-        #             mlplayer.play()
-        #     elif ch == 'd':
-        #         mlplayer.next()
-        #     elif ch == 'a':
-        #         mlplayer.previous()
-        #     else:
-        #         break
-        #     continue
-    # else:
-    #     menu_actions[ch]()
-    # while mlplayer.is_playing():
-        # print(mlplayer.get_state())
-        # time.sleep(5)
-    # choice = input('\ns - Play/Pause\td - Next\ta - Previous\tw - Stop: ')
-    # ch = choice.lower()
-    # while True:
-    #     if ch == 's':
-    #         # print('Play')
-    #         if mlplayer.is_playing():
-    #             mlplayer.pause()
-    #             continue
-    #         else:
-    #             mlplayer.play()
-    #             continue
-    #     elif ch == 'w':
-    #         # print('Stop')
-    #         mlplayer.stop()
-    #         continue
-
-# def play_opts():
-#     choice = input('\ns - Play/Pause\td - Next\ta - Previous\tw - Stop: ')
-#     ch = choice.lower()
-#     if ch == '':
-#         menu_actions['main_menu']()
-#     else:
-#         try:
-#             menu_play[ch]()
-#         except KeyError:
-#             print("Invalid selection, please try again.\n")
-#             menu_actions['main_menu']()
-#     return
-
-    # try:
-    #     while player.is_playing():
-    #         time.sleep(5)
-    #         continue
-    # except Exception:
-    #     print('There was an issue')
-
-    # choice = input('\nP - Play\tN - Next\tP - Previous\tS - Stop: ')
-    # ch = choice.lower()
-    # if ch == '':
-    #     menu_actions['main_menu']()
-    # else:
-    #     try:
-    #         for song in songs:
-    #             vlc_play('music/' + song)
-    #     except Exception:
-    #         print "There was an exception.\n"
-    #         menu_actions['main_menu']()
-    # return
 
 
 # Menu 1
@@ -209,26 +139,30 @@ def podcasts():
 # Menu 1
 def streams():
     print("Streams...\n")
-    print("9. Back")
-    print("0. Quit")
-    choice = input(" >>  ")
-    exec_menu(choice)
+    try:
+        with open(streams_file, 'r') as f:
+            streams = [x.strip('\n') for x in f.readlines()]
+    except FileNotFoundError:
+        print('File Not Found')
+    for stream in streams:
+        print(stream)
+    random_streams = streams
+    random.shuffle(random_streams)
+    for i in (random_streams):
+        print(i)
+    choice = input('(P)lay/Pause\t9. Back\t0. Exit\n->> ')
+    ch = choice.lower()
+
+    exec_menu(ch)
     return
 
 
-# def vlc_play(song):
-#     '''Play audio from selected directory'''
-#     instance = vlc.Instance()
-#     player = instance.media_player_new()
-#     media = instance.media_new(song)
-#     player.set_media(media)
-#     player.play()
-#     time.sleep(1)  # Give time to get going
-#     while True:
-#         state = player.get_state()
-#         if state not in playing:
-#             break
-#         continue
+# i = vlc.Instance() # New VLC instance
+# m = i.media_new('http stream') # Set the mp3 http server URL
+# p = m.player_new_from_media() # Create a player for the stream
+# p.play() # Start playing the stream
+# m.parse() # Synchronous parse of the stream
+# song = m.get_meta(12) # Get song title and artist (Artist - Title)
 
 
 def vlc_play_pause(song):
@@ -263,11 +197,12 @@ def exit():
     sys.exit()
 
 
-# Menu definition
+# Menu definition dictionary
 menu_actions = {
     'main_menu': main_menu,
     '1': music,
     '2': podcasts,
+    '3': streams,
     '9': back,
     '0': exit,
 }
