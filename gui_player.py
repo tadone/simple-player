@@ -66,14 +66,14 @@ class Player(wx.Frame):
         play   = wx.Button(ctrlpanel, label="Play")
         stop   = wx.Button(ctrlpanel, label="Stop")
         volume = wx.Button(ctrlpanel, label="Volume")
-        self.volslider = wx.Slider(ctrlpanel, -1, 0, 0, 100, size=(100, -1))
+        # self.volslider = wx.Slider(ctrlpanel, -1, 0, 0, 100, size=(100, -1))
 
         # Bind controls to events
         self.Bind(wx.EVT_BUTTON, self.OnPlay, play)
         self.Bind(wx.EVT_BUTTON, self.OnPause, pause)
         self.Bind(wx.EVT_BUTTON, self.OnStop, stop)
         self.Bind(wx.EVT_BUTTON, self.OnToggleVolume, volume)
-        self.Bind(wx.EVT_SLIDER, self.OnSetVolume, self.volslider)
+        # self.Bind(wx.EVT_SLIDER, self.OnSetVolume, self.volslider)
 
         # Give a pretty layout to the controls
         ctrlbox = wx.BoxSizer(wx.VERTICAL)
@@ -86,8 +86,8 @@ class Player(wx.Frame):
         box2.Add(pause)
         box2.Add(stop)
         box2.Add((-1, -1), 1)
-        box2.Add(volume)
-        box2.Add(self.volslider, flag=wx.TOP | wx.LEFT, border=5)
+        # box2.Add(volume)
+        # box2.Add(self.volslider, flag=wx.TOP | wx.LEFT, border=5)
         # Merge box1 and box2 to the ctrlsizer
         ctrlbox.Add(box1, flag=wx.EXPAND | wx.BOTTOM, border=10)
         ctrlbox.Add(box2, 1, wx.EXPAND)
@@ -147,7 +147,7 @@ class Player(wx.Frame):
             self.OnPlay(None)
 
             # set the volume slider to the current volume
-            self.volslider.SetValue(self.player.audio_get_volume() / 2)
+            # self.volslider.SetValue(self.player.audio_get_volume() / 2)
 
         # finally destroy the dialog
         dlg.Destroy()
@@ -202,12 +202,12 @@ class Player(wx.Frame):
         # update the volume slider;
         # since vlc volume range is in [0, 200],
         # and our volume slider has range [0, 100], just divide by 2.
-        self.volslider.SetValue(self.player.audio_get_volume() / 2)
+        # self.volslider.SetValue(self.player.audio_get_volume() / 2)
 
     def OnSetVolume(self, evt):
         """Set the volume according to the volume sider.
         """
-        volume = self.volslider.GetValue() * 2
+        # volume = self.volslider.GetValue() * 2
         # vlc.MediaPlayer.audio_set_volume returns 0 if success, -1 otherwise
         if self.player.audio_set_volume(volume) == -1:
             self.errorDialog("Failed to set volume")

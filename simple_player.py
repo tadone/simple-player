@@ -53,9 +53,9 @@ def exec_menu(choice):
 def music():
     print("Music...\n")
     songs = [os.path.join('music', f) for f in os.listdir('music')]  # List of songs in music folder
-    random_songs = [os.path.join('music', f) for f in os.listdir('music')]
-    random.shuffle(random_songs)  # Randomize songs in this list
-    # songz = os.listdir('music')
+    songs.sort()  # Sort the list
+    # random_songs = songs
+    # random.shuffle(random_songs)  # Randomize songs in this list
     global counter
     for song in songs:
         if len(songs) < 0:
@@ -68,62 +68,74 @@ def music():
     vlc_player = Instance.media_player_new()
     # Music Menu
     print('\n' + 40 * '-')
-    is_random = input('Random? y/n: ')
-    if is_random.lower() == 'y':
-        print('Random ON')
-        rand = True
-    else:
-        print('Random OFF')
-        rand = False
-    choice = input('(P)lay/Pause\t9. Back\t0. Exit\n->> ')
-    ch = choice.lower()
+    # is_random = input('Shuffle? [y/N]: ')
+    # if is_random.lower() == 'y':
+    #     print('Shuffle ON')
+    #     rand = True
+    # else:
+    #     print('Shuffle OFF')
+    #     rand = False
+    # choice = input('(P)lay/Pause\t9. Back\t0. Exit\n->> ')
+    # ch = choice.lower()
+    # if ch == 'p' and not vlc_player.is_playing():
+    # num = random.randint(0, len(songs) - 1)
+    # if rand:
+    #     vlc_player.set_mrl(random_songs[x])
+    #     print('\nPlaying {}\n'.format(random_songs))
+    # else:
+    #     vlc_player.set_mrl(songs[x])
+    #     print('\nPlaying {}\n'.format(songs))
     x = 0
-    if ch == 'p' and not vlc_player.is_playing():
-        # num = random.randint(0, len(songs) - 1)
-        if rand:
-            vlc_player.set_mrl(random_songs[x])
-            print('\nPlaying {}\n'.format(random_songs[0]))
-        else:
+    vlc_player.set_mrl(songs[x])
+    rand = False
+    while True:
+        choice = input('(S) Shuffle * (P)lay/Pause * (N)ext Song * P(r)evious Song * (X) Stop * (9) Back * (0) Exit: ')
+        ch = choice.lower()
+        if ch == 's' and not rand:
+            rand = True
+            random.shuffle(songs)
+            print('Shuffle ON')
+        elif ch == 's' and rand:
+            rand = False
+            songs.sort()
+            print('Shuffle OFF')
+        elif ch == 'p' and not vlc_player.is_playing():
+            vlc_player.play()
+            print('Playing...')
+        elif ch == 'p' and vlc_player.is_playing():
+            vlc_player.pause()
+            print('Pausing...')
+        elif ch == 'n':
+            x += 1
+            if x > len(songs) - 1 and not rand:
+                x = 0
+            elif x > len(songs) - 1 and rand:
+                x = 0
+                random.shuffle(songs)
+                print('Reshuffling Songs...')
             vlc_player.set_mrl(songs[x])
-            print('\nPlaying {}\n'.format(songs[0]))
-        vlc_player.play()
-        while True:
-            choice = input('(P)lay/Pause * (N)ext Song * P(r)evious Song * (X) Stop * (9) Back * (0) Exit: ')
-            ch = choice.lower()
-            if ch == 'p' and not vlc_player.is_playing():
-                vlc_player.play()
-                print('Resuming...')
-            elif ch == 'p' and vlc_player.is_playing():
-                vlc_player.pause()
-                print('Pausing...')
-            elif ch == 'n':
-                # next_num = random.randint(0, len(songs) - 1)
-                x += 1
-                if rand:
-                    vlc_player.set_mrl(random_songs[x])
-                    print('Playing Next: {}'.format(random_songs[x]))
-                    vlc_player.play()
-                else:
-                    vlc_player.set_mrl(songs[x])
-                    print('Playing Next: {}'.format(songs[x]))
-                    vlc_player.play()
-            elif ch == 'r':
-                x -= 1
-                vlc_player.set_mrl(random_songs[x])
-                print('Playing Previous: {}'.format(random_songs[x]))
-                vlc_player.play()
-            elif ch == 'x':
-                vlc_player.stop()
-            elif ch == '9':
-                vlc_player.stop()
-                exec_menu(ch)
-            elif ch == '0':
-                exec_menu(ch)
-            else:
-                print('Wrong choice...')
-            continue
-    else:
-        exec_menu(ch)
+            print('Playing Next: {}'.format(songs[x]))
+            vlc_player.play()
+        elif ch == 'r':
+            x -= 1
+            if x < 0 and not rand:
+                x = 0
+            elif x < 0 and rand:
+                x = 0
+                random.shuffle(songs)
+                print('Reshuffling Songs...')
+                time.sleep(0.2)
+            vlc_player.set_mrl(songs[x])
+            print('Playing Next: {}'.format(songs[x]))
+            vlc_player.play()
+        elif ch == 'x':
+            vlc_player.stop()
+        else:
+            exec_menu(ch)
+            print('Wrong choice...')
+        continue
+    # else:
+    #     exec_menu(ch)
 
 
 # Menu 1
@@ -148,35 +160,19 @@ def streams():
         print(stream)
     random_streams = streams
     random.shuffle(random_streams)
-    for i in (random_streams):
-        print(i)
     choice = input('(P)lay/Pause\t9. Back\t0. Exit\n->> ')
     ch = choice.lower()
 
     exec_menu(ch)
     return
 
-
+# def vlc_player(media)
 # i = vlc.Instance() # New VLC instance
 # m = i.media_new('http stream') # Set the mp3 http server URL
 # p = m.player_new_from_media() # Create a player for the stream
 # p.play() # Start playing the stream
 # m.parse() # Synchronous parse of the stream
 # song = m.get_meta(12) # Get song title and artist (Artist - Title)
-
-
-def vlc_play_pause(song):
-    player = vlc.MediaPlayer(song)
-    player.play()
-    # player.get_instance()
-    player = vlc.MediaPlayer('music/' + songs[0])
-    print('playing ' + songs[0])
-    player.play()
-    time.sleep(1)
-    while player.is_playing():
-        print(player.get_state())
-        time.sleep(2)
-        continue
 
 
 def sub_menu():

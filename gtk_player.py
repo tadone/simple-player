@@ -23,9 +23,19 @@ class ApplicationWindow(Gtk.Window):
     def setup_objects_and_events(self):
         self.playback_button = Gtk.Button()
         self.stop_button = Gtk.Button()
+        self.next_button = Gtk.Button()
+        self.prev_button = Gtk.Button()
 
         self.play_image = Gtk.Image.new_from_icon_name(
                 "gtk-media-play",
+                Gtk.IconSize.MENU
+            )
+        self.next_image = Gtk.Image.new_from_icon_name(
+                "gtk-media-next",
+                Gtk.IconSize.MENU
+            )
+        self.prev_image = Gtk.Image.new_from_icon_name(
+                "gtk-media-prev",
                 Gtk.IconSize.MENU
             )
         self.pause_image = Gtk.Image.new_from_icon_name(
@@ -37,20 +47,22 @@ class ApplicationWindow(Gtk.Window):
                 Gtk.IconSize.MENU
             )
 
-        self.playback_button.set_image(self.play_image)
-        self.stop_button.set_image(self.stop_image)
+        # self.playback_button.set_image(self.play_image)
+        # self.stop_button.set_image(self.stop_image)
 
         self.playback_button.connect("clicked", self.toggle_player_playback)
         self.stop_button.connect("clicked", self.stop_player)
 
         self.draw_area = Gtk.DrawingArea()
-        self.draw_area.set_size_request(300,300)
+        self.draw_area.set_size_request(500, 300)
 
         self.draw_area.connect("realize",self._realized)
 
-        self.hbox = Gtk.Box(spacing=6)
+        self.hbox = Gtk.Box(spacing=5)
         self.hbox.pack_start(self.playback_button, True, True, 0)
         self.hbox.pack_start(self.stop_button, True, True, 0)
+        self.hbox.pack_start(self.next_button, True, True, 0)
+        self.hbox.pack_start(self.prev_button, True, True, 0)
 
         self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(self.vbox)
